@@ -5,7 +5,7 @@ from endpoints.base_endpoints import BaseEndpoints
 from schemas.user.change_data_user_schemas import PostOkSchema, PostErrorSchema, UserData
 from helpers import user_data
 
-class TestLoginUser:
+class TestChangeData:
 
     @classmethod
     def setup_class(cls):

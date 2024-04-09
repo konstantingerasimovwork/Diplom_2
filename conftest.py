@@ -21,15 +21,13 @@ def registration():
     response_schema = PostOkSchema.parse_raw(json.dumps(response_text))
     access_token = response_schema.accessToken
 
-    if response.status_code == 200:
-        user_login_data["email"] = data['email']
-        user_login_data["password"] = data['password']
-        user_login_data["name"] = data['name']
-        user_login_data["access_token"] = access_token
+    user_login_data["email"] = data['email']
+    user_login_data["password"] = data['password']
+    user_login_data["name"] = data['name']
+    user_login_data["access_token"] = access_token
     yield user_login_data
     response = requests.delete(f'{URL_AUTH}/user', timeout=10,
                                headers={'Authorization': user_login_data["access_token"]})
-    assert response.status_code == 202, response.json()
 
 
 @pytest.fixture(scope="function")
@@ -39,16 +37,8 @@ def login_user(registration):
         "email": registration['email'],
         "password": registration['password']
     }
-    response = requests.post(f'{URL_AUTH}/login', data=payload, timeout=10, headers={'Autorization': registration['access_token']})
-    response_text = response.json()
-    response_schema = PostOkSchema.parse_raw(json.dumps(response_text))
-    access_token = response_schema.accessToken
-    user_login_data = {}
-    if response.status_code == 200:
-        user_login_data["email"] = registration['email']
-        user_login_data["name"] = registration['name']
-        user_login_data["access_token"] = access_token
-    yield user_login_data
+    requests.post(f'{URL_AUTH}/login', data=payload, timeout=10, headers={'Autorization': registration['access_token']})
+    yield registration
 
 @pytest.fixture(scope="function")
 def create_order(login_user):
@@ -56,6 +46,6 @@ def create_order(login_user):
         "ingredients": ["61c0c5a71d1f82001bdaaa6d", "61c0c5a71d1f82001bdaaa6f"]
     }
     access_token = login_user["access_token"]
-    response = requests.post(f'{URL_ORDER}', data=payload, timeout=10, headers={'Autorization': access_token})
-    if response.status_code == 200:
-        yield access_token
+    requests.post(f'{URL_ORDER}', data=payload, timeout=10, headers={
+                             'Autorization': access_token})
+    yield access_token

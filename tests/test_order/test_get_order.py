@@ -3,6 +3,7 @@ import json
 from endpoints.order.get_order import GetOrder
 from endpoints.base_endpoints import BaseEndpoints
 from schemas.order.get_order_schemas import PostOkSchema, PostErrorSchema
+from response_data import NON_AUTHORIZED
 
 
 class TestGetOrder:
@@ -28,8 +29,5 @@ class TestGetOrder:
         response_status_code = self.base.check_response_status_code(response)
         response_text = self.base.check_response_text(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_body = {
-            "success": False,
-            "message": "You should be authorised"
-        }
+        expected_body = NON_AUTHORIZED
         assert response_status_code == 401 and response_text == expected_body, f'Статус код - {response_status_code} и тело ответа - {response_text}'

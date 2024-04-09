@@ -3,6 +3,8 @@ import json
 from endpoints.order.create_order import CreateOrder
 from endpoints.base_endpoints import BaseEndpoints
 from schemas.order.create_order_schemas import PostOkSchema, PostErrorSchema
+from data import ingredients_list
+from response_data import EMPTY_INGREDIENTS
 
 
 class TestLoginUser:
@@ -15,7 +17,7 @@ class TestLoginUser:
     @allure.title('Проверка создания заказа с авторизацией')
     def test_create_order_with_auth(self, login_user):
         payload = {
-            "ingredients": ["61c0c5a71d1f82001bdaaa6d", "61c0c5a71d1f82001bdaaa6f"]
+            "ingredients": ingredients_list
         }
         access_token = login_user["access_token"]
         response = self.create_order.post_request_with_auth(payload, access_token)
@@ -28,7 +30,7 @@ class TestLoginUser:
     @allure.title('Проверка создания заказа без авторизации')
     def test_create_order_without_auth(self):
         payload = {
-            "ingredients": ["61c0c5a71d1f82001bdaaa6d", "61c0c5a71d1f82001bdaaa6f"]
+            "ingredients": ingredients_list
         }
         response = self.create_order.post_request_without_auth(payload)
         response_status_code = self.base.check_response_status_code(response)
@@ -47,10 +49,7 @@ class TestLoginUser:
         response_status_code = self.base.check_response_status_code(response)
         response_text = self.base.check_response_text(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_body = {
-            "success": False,
-            "message": "Ingredient ids must be provided"
-        }
+        expected_body = EMPTY_INGREDIENTS
         assert response_status_code == 400 and expected_body == response_text, f'Статус код - {response_status_code} и тело ответа - {response_text}'
 
     @allure.title('Проверка создания заказа без ингредиентов без авторизации')
@@ -62,10 +61,7 @@ class TestLoginUser:
         response_status_code = self.base.check_response_status_code(response)
         response_text = self.base.check_response_text(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_body = {
-            "success": False,
-            "message": "Ingredient ids must be provided"
-        }
+        expected_body = EMPTY_INGREDIENTS
         assert response_status_code == 400 and expected_body == response_text, f'Статус код - {response_status_code} и тело ответа - {response_text}'
 
     @allure.title('Проверка создания заказа с неверным хешем ингредиентов')

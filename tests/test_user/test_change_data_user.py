@@ -4,6 +4,7 @@ from endpoints.user.change_data_user import ChangeDataUser
 from endpoints.base_endpoints import BaseEndpoints
 from schemas.user.change_data_user_schemas import PostOkSchema, PostErrorSchema, UserData
 from helpers import user_data
+from response_data import NON_AUTHORIZED
 
 class TestChangeData:
 
@@ -61,10 +62,7 @@ class TestChangeData:
         response_status_code = self.base.check_response_status_code(response)
         response_text = self.base.check_response_text(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_result = {
-            "success": False,
-            "message": "You should be authorised"
-        }
+        expected_result = NON_AUTHORIZED
         assert response_status_code == 401 and expected_result == response_text, f'Статус код - {response_status_code} и тело ответа - {response_text}'
 
     @allure.title('Проверка изменения name пользователя без авторизации')
@@ -75,8 +73,5 @@ class TestChangeData:
         response_status_code = self.base.check_response_status_code(response)
         response_text = self.base.check_response_text(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_result = {
-            "success": False,
-            "message": "You should be authorised"
-        }
+        expected_result = NON_AUTHORIZED
         assert response_status_code == 401 and expected_result == response_text, f'Статус код - {response_status_code} и тело ответа - {response_text}'

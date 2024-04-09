@@ -3,6 +3,7 @@ import json
 from endpoints.user.login_user import LoginUser
 from endpoints.base_endpoints import BaseEndpoints
 from schemas.user.login_user_schemas import PostOkSchema, PostErrorSchema, UserData
+from response_data import INCORRECT_EMAIL_OR_PASSWORD
 
 
 class TestLoginUser:
@@ -49,10 +50,7 @@ class TestLoginUser:
         response_status_code = self.base.check_response_status_code(response)
         response_text = self.base.check_response_text(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_body = {
-            "success": False,
-            "message": "email or password are incorrect"
-        }
+        expected_body = INCORRECT_EMAIL_OR_PASSWORD
         assert response_status_code == 401 and response_text == expected_body, f'Статус код - {response_status_code} и тело ответа - {response_text}'
 
     @allure.title('Проверка авторизации пользователя с неправильным password')
@@ -66,8 +64,5 @@ class TestLoginUser:
         response_status_code = self.base.check_response_status_code(response)
         response_text = self.base.check_response_text(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_body = {
-            "success": False,
-            "message": "email or password are incorrect"
-        }
+        expected_body = INCORRECT_EMAIL_OR_PASSWORD
         assert response_status_code == 401 and response_text == expected_body, f'Статус код - {response_status_code} и тело ответа - {response_text}'

@@ -4,6 +4,7 @@ from endpoints.user.create_new_user import CreateNewUser
 from endpoints.base_endpoints import BaseEndpoints
 from schemas.user.create_new_user_schemas import PostOkSchema, PostErrorSchema, UserData
 from helpers import user_data
+from response_data import REQUIRED_FIELDS, USER_ALREADY_EXIST
 
 
 class TestCreateUser:
@@ -51,10 +52,7 @@ class TestCreateUser:
         response_text = self.base.check_response_text(response)
         response_status_code = self.base.check_response_status_code(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_body = {
-            "success": False,
-            "message": "User already exists"
-        }
+        expected_body = USER_ALREADY_EXIST
         assert response_status_code == 403 and response_text == expected_body, f'Статус код - {response_status_code} и тело ответа - {response_text}'
 
     @allure.title('Проверка создания нового пользователя без обязательного поля email')
@@ -68,10 +66,7 @@ class TestCreateUser:
         response_text = self.base.check_response_text(response)
         response_status_code = self.base.check_response_status_code(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_body = {
-            "success": False,
-            "message": "Email, password and name are required fields"
-        }
+        expected_body = REQUIRED_FIELDS
         assert response_status_code == 403 and response_text == expected_body, f'Статус код - {response_status_code} и тело ответа - {response_text}'
 
     @allure.title('Проверка создания нового пользователя без обязательного поля password')
@@ -85,10 +80,7 @@ class TestCreateUser:
         response_text = self.base.check_response_text(response)
         response_status_code = self.base.check_response_status_code(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_body = {
-            "success": False,
-            "message": "Email, password and name are required fields"
-        }
+        expected_body = REQUIRED_FIELDS
         assert response_status_code == 403 and response_text == expected_body, f'Статус код - {response_status_code} и тело ответа - {response_text}'
 
     @allure.title('Проверка создания нового пользователя без обязательного поля name')
@@ -102,8 +94,5 @@ class TestCreateUser:
         response_text = self.base.check_response_text(response)
         response_status_code = self.base.check_response_status_code(response)
         PostErrorSchema.parse_obj(response_text)
-        expected_body = {
-            "success": False,
-            "message": "Email, password and name are required fields"
-        }
+        expected_body = REQUIRED_FIELDS
         assert response_status_code == 403 and response_text == expected_body, f'Статус код - {response_status_code} и тело ответа - {response_text}'
